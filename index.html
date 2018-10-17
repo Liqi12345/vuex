@@ -19,7 +19,7 @@
 //在vuex中，state是唯一会用过模块的别名来添加层级的，getters，mutations，actions都是直接合并在store下
 Vue.use(Vuex)
 console.log(Vuex)
-////////////
+////////////////////////////mode1/////////////////////
 const mda = {
   state:{
     aa:'1'
@@ -33,12 +33,13 @@ const mda = {
   mutations:{
     test1(state){console.log(state.aa)}
   },
-  actions:{
-    test2(context){
-      context.dispatch('test3')
-    }
-  }
+  // actions:{
+  //   test2(context){
+  //     context.dispatch('test3') //触发不同模块的
+  //   }
+  // }
 }
+////////////////////////////mode2/////////////////////
 const mdb = {
   state:{
     bb:'2'
@@ -49,7 +50,7 @@ const mdb = {
     }
   },
   mutations:{
-    test1(state){console.log(state.bb)}
+    test2(state){console.log(state.bb)}
   },
   // actions:{
   //   test3(context){
@@ -61,25 +62,40 @@ const mdb = {
   // },
   actions:{//结构赋值
     test3({commit,getters}){
-      commit('test1')
+      commit('test2')
       // console.log(context.rootState.one.aa)
       console.log(getters.fn)
   
     }
   }
 }
+////////////////////////////mode3/////////////////////
+const mdc = {
+  state:{
+    list:
+    [
+      {id:1,text:'one'},
+      {id:2,text:'two'},
+      {id:3,text:'three'}
 
-
+    ]
+  },
+  getters:{
+    fn3:(state)=>(id)=>{return state.list.find(todo=>todo.id == id)}
+  }
+}
 const store = new Vuex.Store({
   modules:{
     one:mda,
-    two:mdb
+    two:mdb,
+    three:mdc
   }
 })
 //模块1，模块2
 console.log(store.state.one.aa,store.state.two.bb)
-console.log(store.getters.fn,store.getters.fn2)
-store.dispatch('test2')
+console.log(store.getters.fn,store.getters.fn2,store.getters.fn3(3),store.state)
+
+store.dispatch('test3')
 //不同模块的mutations通过commit触发，同名会依次触发不会报错
 //store.commit('test1')
 //
