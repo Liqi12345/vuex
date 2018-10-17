@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vuex@3.0.1/dist/vuex.js"></script>
+</head>
+<body>
+  <div id="app">
+
+     <button @click="add">+</button>
+          {{counts}}
+     <button @click="reduce">-</button>
+  </div>
+</body>
+</html>
+<script>
+console.log(Vuex)
+  Vue.use(Vuex)
+  var store = new Vuex.Store({
+    state:{
+      count:0
+    },
+    mutations:{
+      add(state){
+          state.count++
+      },
+      reduce(state){
+        return state.count --
+      }
+    },
+    actions:{
+      sum(context){
+        context.commit('add')
+      }
+    }
+  })
+  new Vue({
+    el:'#app',
+    computed:{
+      counts(){
+      return store.state.count
+      }
+      
+    },
+    methods:{
+      add(){
+        return store.dispatch('sum')
+       },
+       reduce(){
+        return store.commit('reduce')
+       }
+    }
+
+  })
+</script>
