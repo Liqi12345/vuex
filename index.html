@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vuex@3.0.1/dist/vuex.js"></script>
+</head>
+<body>
+	<div id="app">
+	  <p>{{ count }}</p>
+	  <p>
+	 
+	  </p>
+	</div>
+</body>
+</html>
+<script>
+//在vuex中，state是唯一会用过模块的别名来添加层级的，getters，mutations，actions都是直接合并在store下
+Vue.use(Vuex)
+console.log(Vuex)
+////////////
+const mda = {
+  state:{
+    aa:'1'
+  },
+  getters:{
+    //state: 模块自身中的state
+    //getters：相当于store.getters
+    //rootState：全局的state
+    fn(state,getters,rootState){return state.aa + rootState.two.bb}
+  },
+  mutations:{
+    test1(state){console.log(state.aa)}
+  },
+  actions:{
+    test2(context){
+      context.dispatch('test3')
+    }
+  }
+}
+const mdb = {
+  state:{
+    bb:'2'
+  },
+  getters:{
+    fn2(state){
+      return 'hello vuex'
+    }
+  },
+  mutations:{
+    test1(state){console.log(state.bb)}
+  },
+  // actions:{
+  //   test3(context){
+  //     context.commit('test1')
+  //     console.log(context.rootState.one.aa)
+  //     console.log(context.getters.fn)
+  //     console.log(context)
+  //   }
+  // },
+  actions:{//结构赋值
+    test3({commit,getters}){
+      commit('test1')
+      // console.log(context.rootState.one.aa)
+      console.log(getters.fn)
+  
+    }
+  }
+}
+
+
+const store = new Vuex.Store({
+  modules:{
+    one:mda,
+    two:mdb
+  }
+})
+//模块1，模块2
+console.log(store.state.one.aa,store.state.two.bb)
+console.log(store.getters.fn,store.getters.fn2)
+store.dispatch('test2')
+//不同模块的mutations通过commit触发，同名会依次触发不会报错
+//store.commit('test1')
+//
+new Vue({
+  el: '#app',
+  computed: {
+    count () {
+	    return store.state.count
+    }
+  },  
+})
+
+</script>
